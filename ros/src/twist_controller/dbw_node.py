@@ -53,7 +53,6 @@ class DBWNode(object):
         self.dt = 0.02
 
         self.current_linear_v = 0
-        self.current_angular_v = 0
         self.goal_linear_v = 0
         self.goal_angular_v =0
         self.dbw_enabled = False
@@ -83,7 +82,6 @@ class DBWNode(object):
     def velocity_cb(self, msg):
         rospy.loginfo("velocity_cb is called")
         self.current_linear_v = msg.twist.linear.x
-        self.current_angular_v = msg.twist.angular.z
 
     def twist_cb(self, msg):
         rospy.loginfo("twist_cb is called")
