@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import eventlet
-eventlet.monkey_patch(socket=True, select=True, time=True)
+eventlet.monkey_patch(socket=True, select=True)#, time=True)
 
 import eventlet.wsgi
 import socketio
@@ -10,8 +10,9 @@ from flask import Flask, render_template
 
 from bridge import Bridge
 from conf import conf
+import sys
 
-sio = socketio.Server()
+sio = socketio.Server(ping_timeout=600)
 app = Flask(__name__)
 msgs = []
 
@@ -65,4 +66,11 @@ if __name__ == '__main__':
     app = socketio.Middleware(sio, app)
 
     # deploy as an eventlet WSGI server
-    eventlet.wsgi.server(eventlet.listen(('', 4567)), app)
+    while True:
+        try:
+            eventlet.wsgi.server(eventlet.listen(('', 4567)), app)
+        except (KeyboardInterrupt, SystemExit,):
+            raise
+        except Exception, ex:
+            print ex
+            pass
