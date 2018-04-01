@@ -11,6 +11,8 @@ from flask import Flask, render_template
 from bridge import Bridge
 from conf import conf
 import sys
+import rospy
+
 
 sio = socketio.Server(ping_timeout=600)
 app = Flask(__name__)
@@ -66,11 +68,9 @@ if __name__ == '__main__':
     app = socketio.Middleware(sio, app)
 
     # deploy as an eventlet WSGI server
-    while True:
+    while not rospy.is_shutdown():
         try:
             eventlet.wsgi.server(eventlet.listen(('', 4567)), app)
-        except (KeyboardInterrupt, SystemExit,):
-            raise
         except Exception, ex:
             print ex
             pass
